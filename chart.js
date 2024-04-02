@@ -1,33 +1,16 @@
-async function loadCsvData(url) {
-    const response = await fetch(url);
-    const csvText = await response.text();
-    const data = csvText.split('\n').map(row => row.split(','));
-    return data;
-}
-
-function calculatePerformance(data, selectedEtfs, startDate, endDate) {
-    const dateIndex = data.findIndex(row => row[0] === startDate);
-    const endDateIndex = data.findIndex(row => row[0] === endDate) || data.length - 1; // endDate가 명시되지 않은 경우 마지막 인덱스 사용
-
-    let performances = {};
-
-    selectedEtfs.forEach(etf => {
-        const etfIndex = data[0].findIndex(columnName => columnName === etf);
-        const startPrice = parseFloat(data[dateIndex][etfIndex]);
-        const endPrice = parseFloat(data[endDateIndex][etfIndex]);
-        const performance = ((endPrice - startPrice) / startPrice) * 100;
-        performances[etf] = performance.toFixed(2);
-    });
-
-    return performances;
-}
-
+/**
+ * 성과 데이터를 바탕으로 차트를 업데이트하는 함수.
+ * @param {Object} performances - ETF별 성과 데이터를 담고 있는 객체.
+ * @param {Array} selectedEtfs - 선택된 ETF 목록.
+ * @param {String} startDate - 성과 계산의 시작 날짜.
+ * @param {String} endDate - 성과 계산의 종료 날짜.
+ */
 function updateChart(performances, selectedEtfs, startDate, endDate) {
     const ctx = document.getElementById('portfolioChart').getContext('2d');
     if (window.portfolioChart) window.portfolioChart.destroy(); // 기존 차트가 있으면 제거
 
-    const labels = Object.keys(performances);
-    const data = Object.values(performances).map(perf => parseFloat(perf));
+    const labels = selectedEtfs; // 선택된 ETF 목록을 라벨로 사용
+    const performanceValues = labels.map(etf => parseFloat(performances[etf]));
 
     window.portfolioChart = new Chart(ctx, {
         type: 'line',
@@ -35,7 +18,7 @@ function updateChart(performances, selectedEtfs, startDate, endDate) {
             labels: labels,
             datasets: [{
                 label: `${startDate} - ${endDate} 성과 (%)`,
-                data: data,
+                data: performanceValues,
                 fill: false,
                 borderColor: 'rgb(75, 192, 192)',
                 tension: 0.1
@@ -48,12 +31,3 @@ function updateChart(performances, selectedEtfs, startDate, endDate) {
         }
     });
 }
-
-// 페이지 로드 시 실행되는 이벤트 리스너
-document.addEventListener('DOMContentLoaded', function() {
-    const calculateBtn = document.getElementById('calculateBtn');
-    calculateBtn.addEventListener('click', async () => {
-        // 사용자 입력 처리 및 성과 계산 로직을 여기에 구현합니다.
-        // 예시 코드는 위에서 제공한 것을 참조하세요.
-    });
-});
