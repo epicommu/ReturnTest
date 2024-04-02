@@ -9,10 +9,47 @@ async function loadCsvData(url) {
     return data;
 }
 
-function calculatePerformance(data, selectedEtf, startDate, endDate) {
-    // 데이터와 사용자 선택에 따라 성과를 계산하는 로직 구현
-    // 이 부분은 프로젝트 요구사항과 데이터 구조에 따라 상이할 수 있으므로, 구체적인 구현은 생략합니다.
+function calculatePerformance(data, selectedEtfs, startDate, endDate) {
+    // 날짜와 ETF 이름을 인덱스로 변환합니다.
+    const dateIndex = data.findIndex(row => row[0] === startDate);
+    const endDateIndex = data.findIndex(row => row[0] === endDate);
+
+    // 선택된 ETF들에 대한 성과를 저장할 객체를 초기화합니다.
+    let performances = {};
+
+    // 각 ETF에 대해 반복하며 성과를 계산합니다.
+    selectedEtfs.forEach(etf => {
+        // ETF의 컬럼 인덱스를 찾습니다.
+        const etfIndex = data[0].findIndex(columnName => columnName === etf);
+
+        // 시작 날짜와 종료 날짜에 해당하는 가격을 찾습니다.
+        const startPrice = parseFloat(data[dateIndex][etfIndex]);
+        const endPrice = parseFloat(data[endDateIndex][etfIndex]);
+
+        // 수익률을 계산합니다. ((종가 - 시작가) / 시작가) * 100
+        const performance = ((endPrice - startPrice) / startPrice) * 100;
+
+        // 계산된 수익률을 performances 객체에 저장합니다.
+        performances[etf] = performance.toFixed(2); // 소수점 둘째 자리까지 반올림
+    });
+
+    return performances;
 }
+
+
+// 예시 데이터 로드 함수 호출
+loadCsvData(csvUrl).then(data => {
+    // 선택된 ETFs, 시작 날짜, 종료 날짜
+    const selectedEtfs = ['ACWI', 'HYG'];
+    const startDate = '2021-01-01';
+    const endDate = '2022-01-01';
+
+    // 성과 계산
+    const performance = calculatePerformance(data, selectedEtfs, startDate, endDate);
+    console.log(performance);
+});
+
+
 
 document.addEventListener('DOMContentLoaded', function() {
     // 요소 참조 및 이벤트 리스너 설정
