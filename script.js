@@ -91,10 +91,20 @@ function updateChart(performance) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const calculateBtn = document.getElementById('calculateBtn');
-
+    
     calculateBtn.addEventListener('click', async () => {
         // 선택된 ETFs 추출
         const selectedEtfs = Array.from(document.querySelectorAll('input[name="stock"]:checked, input[name="bond"]:checked, input[name="alternative"]:checked')).map(input => input.value);
+
+        // 모든 자산군에서 최소 한 개의 ETF가 선택되었는지 확인
+        const hasStockSelected = Array.from(document.querySelectorAll('input[name="stock"]:checked')).length > 0;
+        const hasBondSelected = Array.from(document.querySelectorAll('input[name="bond"]:checked')).length > 0;
+        const hasAlternativeSelected = Array.from(document.querySelectorAll('input[name="alternative"]:checked')).length > 0;
+
+        if (!hasStockSelected || !hasBondSelected || !hasAlternativeSelected) {
+            alert("각 자산군에서 최소 한 개의 자산을 선택해야 합니다.");
+            return;
+        }
 
         // 기간 추출
         const selectedPeriod = document.querySelector('input[name="period"]:checked').value;
@@ -114,25 +124,48 @@ document.addEventListener('DOMContentLoaded', function() {
         // 성과 계산
         const performances = calculatePerformance(data, selectedEtfs, startDateStr, endDateStr);
 
-        // 성과를 기반으로 차트 업데이트 (차트 업데이트 로직은 별도로 구현)
+        // 성과를 기반으로 차트 업데이트
         updateChart(performances, selectedEtfs, startDateStr, endDateStr);
     });
 });
 
-function updateChart(performances, selectedEtfs, startDate, endDate) {
-    // 차트 데이터 준비
-    const labels = selectedEtfs;
-    const data = Object.values(performances).map(perf => parseFloat(perf));
+async function loadCsvData(url) {
+    const response = await fetch(url);
+    const csvText = await response.text();
+    const data = csvText.split('\n').map(row => row.split(','));
+    return data;
+}
 
+function calculatePerformance(data, selectedEtfs, startDate, endDate) {
+    const dateIndex = data.findIndex(row => row[0] === startDate);
+    const endDateIndex = data.findIndex(row => row[0] === endDate) || data.length - 1; // endDate가 명시되지 않은 경우 마지막 인덱스 사용
+
+    let performances = {};
+
+    selectedEtfs.forEach(etf => {
+        const etfIndex = data[0].findIndex(columnName => columnName === etf);
+        const startPrice = parseFloat(data[dateIndex][etfIndex]);
+        const endPrice = parseFloat(data[endDateIndex][etfIndex]);
+        const performance = ((endPrice - startPrice) / startPrice) * 100;
+        performances[etf] = performance.toFixed(2);
+    });
+
+    return performances;
+}
+
+function updateChart(performances, selectedEtfs, startDate, endDate) {
     const ctx = document.getElementById('portfolioChart').getContext('2d');
     if (window.portfolioChart) window.portfolioChart.destroy(); // 기존 차트가 있으면 제거
+
+    const labels = Object.keys(performances);
+    const data = Object.values(performances).map(perf => parseFloat(perf));
 
     window.portfolioChart = new Chart(ctx, {
         type: 'line',
         data: {
             labels: labels,
             datasets: [{
-                label: `${startDate} - ${endDate} 성과`,
+                label: `${startDate} - ${endDate} 성과 (%)`,
                 data: data,
                 fill: false,
                 borderColor: 'rgb(75, 192, 192)',
@@ -146,4 +179,3 @@ function updateChart(performances, selectedEtfs, startDate, endDate) {
         }
     });
 }
-
