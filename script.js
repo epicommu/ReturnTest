@@ -1,5 +1,5 @@
 // price.csv 파일의 URL (예시 URL입니다. 실제 URL로 변경해주세요.)
-const csvUrl = 'https://raw.githubusercontent.com/username/repository/branch/price.csv';
+const csvUrl = 'https://raw.githubusercontent.com/epicommu/ReturnTest/main/price.csv';
 
 // CSV 데이터를 로드하고 파싱하는 함수
 async function loadCsvData(url) {
