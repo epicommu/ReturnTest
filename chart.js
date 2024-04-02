@@ -5,33 +5,46 @@
  * @param {String} startDate - 성과 계산의 시작 날짜.
  * @param {String} endDate - 성과 계산의 종료 날짜.
  */
-function updateChart(performances, selectedEtfs, startDate, endDate) {
+function updateChart(etfReturns, selectedEtfs, startDate, endDate) {
     const ctx = document.getElementById('portfolioChart').getContext('2d');
+    if (window.portfolioChart) window.portfolioChart.destroy(); // 기존 차트 제거
 
-    // 기존 차트가 있고, destroy 메서드가 존재하는 경우에만 destroy 호출
-    if (window.portfolioChart && typeof window.portfolioChart.destroy === 'function') {
-        window.portfolioChart.destroy();
-    }
+    // 모든 선택된 ETF의 날짜별 수익률 평균 계산
+    const dates = Object.keys(etfReturns[selectedEtfs[0]]); // 날짜 배열
+    const portfolioReturns = dates.map(date => {
+        let totalReturn = 0;
+        selectedEtfs.forEach(etf => {
+            totalReturn += parseFloat(etfReturns[etf][date]); // 날짜별 수익률을 더함
+        });
+        return (totalReturn / selectedEtfs.length).toFixed(2); // ETF 수로 나누어 평균 계산
+    });
 
-    const labels = selectedEtfs; // 선택된 ETF 목록을 라벨로 사용
-    const performanceValues = labels.map(etf => parseFloat(performances[etf])); // 성과 데이터를 숫자로 변환
+    // 누적 수익률 계산
+    const cumulativeReturns = portfolioReturns.map((ret, index) => 
+        index === 0 ? ret : (parseFloat(ret) + parseFloat(cumulativeReturns[index - 1])).toFixed(2)
+    );
 
-    // 차트 인스턴스를 window.portfolioChart에 할당
+    // 차트 데이터 설정
+    const data = {
+        labels: dates,
+        datasets: [{
+            label: `Portfolio Cumulative Return (%) from ${startDate} to ${endDate}`,
+            data: cumulativeReturns,
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1,
+            fill: false,
+        }]
+    };
+
+    // 차트 생성
     window.portfolioChart = new Chart(ctx, {
-        type: 'line', // 차트 유형: 선형
-        data: {
-            labels: labels, // X축에 표시될 라벨
-            datasets: [{
-                label: `${startDate} - ${endDate} 성과 (%)`, // 데이터셋 라벨
-                data: performanceValues, // Y축에 표시될 데이터
-                fill: false, // 선 아래를 채우지 않음
-                borderColor: 'rgb(75, 192, 192)', // 선의 색상
-                tension: 0.1 // 선의 곡선 정도
-            }]
-        },
+        type: 'line',
+        data: data,
         options: {
             scales: {
-                y: { beginAtZero: true } // Y축이 0에서 시작하도록 설정
+                y: {
+                    beginAtZero: false
+                }
             }
         }
     });
