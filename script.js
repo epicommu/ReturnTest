@@ -183,3 +183,15 @@ function updateChart(performances, selectedEtfs, startDate, endDate) {
         }
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const calculateBtn = document.getElementById('calculateBtn');
+
+    calculateBtn.addEventListener('click', async () => {
+        // 선택된 ETFs 추출, 기간 계산, 데이터 로드 및 성과 계산
+        // ...
+
+        // 차트 업데이트 함수 호출
+        updateChart(performances, selectedEtfs, startDateStr, endDateStr);
+    });
+});
