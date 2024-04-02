@@ -88,3 +88,62 @@ function updateChart(performance) {
         }
     });
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    const calculateBtn = document.getElementById('calculateBtn');
+
+    calculateBtn.addEventListener('click', async () => {
+        // 선택된 ETFs 추출
+        const selectedEtfs = Array.from(document.querySelectorAll('input[name="stock"]:checked, input[name="bond"]:checked, input[name="alternative"]:checked')).map(input => input.value);
+
+        // 기간 추출
+        const selectedPeriod = document.querySelector('input[name="period"]:checked').value;
+        
+        // 현재 날짜와 선택된 기간을 기반으로 시작 날짜와 종료 날짜 계산
+        const endDate = new Date();
+        const startDate = new Date();
+        startDate.setFullYear(endDate.getFullYear() - selectedPeriod);
+
+        // 날짜를 'yyyy-mm-dd' 형식으로 변환
+        const startDateStr = startDate.toISOString().split('T')[0];
+        const endDateStr = endDate.toISOString().split('T')[0];
+
+        // CSV 데이터 로드
+        const data = await loadCsvData(csvUrl);
+
+        // 성과 계산
+        const performances = calculatePerformance(data, selectedEtfs, startDateStr, endDateStr);
+
+        // 성과를 기반으로 차트 업데이트 (차트 업데이트 로직은 별도로 구현)
+        updateChart(performances, selectedEtfs, startDateStr, endDateStr);
+    });
+});
+
+function updateChart(performances, selectedEtfs, startDate, endDate) {
+    // 차트 데이터 준비
+    const labels = selectedEtfs;
+    const data = Object.values(performances).map(perf => parseFloat(perf));
+
+    const ctx = document.getElementById('portfolioChart').getContext('2d');
+    if (window.portfolioChart) window.portfolioChart.destroy(); // 기존 차트가 있으면 제거
+
+    window.portfolioChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: `${startDate} - ${endDate} 성과`,
+                data: data,
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+}
+
