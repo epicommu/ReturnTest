@@ -10,17 +10,30 @@ async function loadCsvData(url) {
 
 // 성과를 계산하는 함수
 function calculatePerformance(data, selectedEtfs, startDate, endDate) {
-    const dateIndex = data.findIndex(row => row[0] === startDate);
-    const endDateIndex = data.findIndex(row => row[0] === endDate) || data.length - 1;
+    // 시작 날짜와 종료 날짜에 해당하는 인덱스 찾기
+    const startIndex = data.findIndex(row => row[0] === startDate);
+    const endIndex = data.findIndex(row => row[0] === endDate);
 
-    return selectedEtfs.reduce((performances, etf) => {
-        const etfIndex = data[0].findIndex(columnName => columnName === etf);
-        const startPrice = parseFloat(data[dateIndex][etfIndex]);
-        const endPrice = parseFloat(data[endDateIndex][etfIndex]);
-        performances[etf] = (((endPrice - startPrice) / startPrice) * 100).toFixed(2);
-        return performances;
+    // 선택된 ETF들의 날짜별 수익률을 저장할 객체 초기화
+    const etfReturns = selectedEtfs.reduce((acc, etf) => {
+        acc[etf] = [];
+        return acc;
     }, {});
+
+    // 각 ETF에 대해 날짜별 수익률 계산
+    for (let i = startIndex + 1; i <= endIndex; i++) {
+        selectedEtfs.forEach(etf => {
+            const etfIndex = data[0].findIndex(columnName => columnName === etf);
+            const previousPrice = parseFloat(data[i - 1][etfIndex]);
+            const currentPrice = parseFloat(data[i][etfIndex]);
+            const returnRate = ((currentPrice - previousPrice) / previousPrice) * 100;
+            etfReturns[etf].push(returnRate.toFixed(2));
+        });
+    }
+
+    return etfReturns;
 }
+
 
 // 각 자산군에서 최소 한 개의 ETF가 선택되었는지 확인하는 함수
 function isSelectedFromEachCategory() {
