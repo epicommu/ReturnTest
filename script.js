@@ -91,43 +91,47 @@ function updateChart(performance) {
 
 document.addEventListener('DOMContentLoaded', function() {
     const calculateBtn = document.getElementById('calculateBtn');
-    
+
     calculateBtn.addEventListener('click', async () => {
         // 선택된 ETFs 추출
         const selectedEtfs = Array.from(document.querySelectorAll('input[name="stock"]:checked, input[name="bond"]:checked, input[name="alternative"]:checked')).map(input => input.value);
 
-        // 모든 자산군에서 최소 한 개의 ETF가 선택되었는지 확인
-        const hasStockSelected = Array.from(document.querySelectorAll('input[name="stock"]:checked')).length > 0;
-        const hasBondSelected = Array.from(document.querySelectorAll('input[name="bond"]:checked')).length > 0;
-        const hasAlternativeSelected = Array.from(document.querySelectorAll('input[name="alternative"]:checked')).length > 0;
-
-        if (!hasStockSelected || !hasBondSelected || !hasAlternativeSelected) {
+        // 각 자산군에서 최소 한 개의 ETF가 선택되었는지 확인
+        if (!isSelectedFromEachCategory()) {
             alert("각 자산군에서 최소 한 개의 자산을 선택해야 합니다.");
             return;
         }
 
-        // 기간 추출
-        const selectedPeriod = document.querySelector('input[name="period"]:checked').value;
-        
-        // 현재 날짜와 선택된 기간을 기반으로 시작 날짜와 종료 날짜 계산
-        const endDate = new Date();
-        const startDate = new Date();
-        startDate.setFullYear(endDate.getFullYear() - selectedPeriod);
+        // 기간 추출 및 날짜 계산
+        const { startDateStr, endDateStr } = calculateDatesBasedOnSelection();
 
-        // 날짜를 'yyyy-mm-dd' 형식으로 변환
-        const startDateStr = startDate.toISOString().split('T')[0];
-        const endDateStr = endDate.toISOString().split('T')[0];
-
-        // CSV 데이터 로드
+        // CSV 데이터 로드 및 성과 계산
         const data = await loadCsvData(csvUrl);
-
-        // 성과 계산
         const performances = calculatePerformance(data, selectedEtfs, startDateStr, endDateStr);
 
-        // 성과를 기반으로 차트 업데이트
+        // 차트 업데이트 로직은 별도의 chart.js 파일로 이동됩니다. (참조를 위해 여기에 남겨둡니다)
         updateChart(performances, selectedEtfs, startDateStr, endDateStr);
     });
 });
+
+// 각 자산군에서 최소 한 개의 ETF가 선택되었는지 확인하는 함수
+function isSelectedFromEachCategory() {
+    const hasStockSelected = Array.from(document.querySelectorAll('input[name="stock"]:checked')).length > 0;
+    const hasBondSelected = Array.from(document.querySelectorAll('input[name="bond"]:checked')).length > 0;
+    const hasAlternativeSelected = Array.from(document.querySelectorAll('input[name="alternative"]:checked')).length > 0;
+    return hasStockSelected && hasBondSelected && hasAlternativeSelected;
+}
+
+// 사용자가 선택한 기간에 기반하여 시작 날짜와 종료 날짜를 계산하는 함수
+function calculateDatesBasedOnSelection() {
+    const selectedPeriod = document.querySelector('input[name="period"]:checked').value;
+    const endDate = new Date();
+    const startDate = new Date(endDate.setFullYear(endDate.getFullYear() - selectedPeriod));
+    const startDateStr = startDate.toISOString().split('T')[0];
+    const endDateStr = new Date().toISOString().split('T')[0];
+    return { startDateStr, endDateStr };
+}
+
 
 async function loadCsvData(url) {
     const response = await fetch(url);
