@@ -19,3 +19,12 @@ h3 {
     max-width: 600px;
     margin: 20px auto;
 }
+
+#assetSelection, #periodSelection {
+    margin-bottom: 20px;
+}
+
+h2 {
+    color: #333;
+    margin-bottom: 10px;
+}
