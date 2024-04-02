@@ -9,24 +9,19 @@
 <body>
     <h1>Investment Portfolio Performance</h1>
     <div id="assetSelection">
-        <h2>자산 선택</h2>
-        <div>
-            <h3>주식</h3>
-            <input type="checkbox" id="ACWI" name="stock" value="ACWI"><label for="ACWI">ACWI</label>
-            <input type="checkbox" id="FEZ" name="stock" value="FEZ"><label for="FEZ">FEZ</label>
-            <input type="checkbox" id="SPY" name="stock" value="SPY"><label for="SPY">SPY</label>
-        </div>
-        <div>
-            <h3>채권</h3>
-            <input type="checkbox" id="HYG" name="bond" value="HYG"><label for="HYG">HYG</label>
-            <input type="checkbox" id="LQD" name="bond" value="LQD"><label for="LQD">LQD</label>
-            <input type="checkbox" id="TLT" name="bond" value="TLT"><label for="TLT">TLT</label>
-        </div>
-        <div>
-            <h3>대체 자산</h3>
-            <input type="checkbox" id="USO" name="alternative" value="USO"><label for="USO">USO</label>
-            <input type="checkbox" id="GLD" name="alternative" value="GLD"><label for="GLD">GLD</label>
-        </div>
+        <h2>주식 자산 선택</h2>
+        <input type="checkbox" id="ACWI" name="stock" value="ACWI"><label for="ACWI">ACWI</label>
+        <input type="checkbox" id="FEZ" name="stock" value="FEZ"><label for="FEZ">FEZ</label>
+        <input type="checkbox" id="SPY" name="stock" value="SPY"><label for="SPY">SPY</label>
+    
+        <h2>채권 자산 선택</h2>
+        <input type="checkbox" id="HYG" name="bond" value="HYG"><label for="HYG">HYG</label>
+        <input type="checkbox" id="LQD" name="bond" value="LQD"><label for="LQD">LQD</label>
+        <input type="checkbox" id="TLT" name="bond" value="TLT"><label for="TLT">TLT</label>
+    
+        <h2>대체 자산 선택</h2>
+        <input type="checkbox" id="USO" name="alternative" value="USO"><label for="USO">USO</label>
+        <input type="checkbox" id="GLD" name="alternative" value="GLD"><label for="GLD">GLD</label>
     </div>
     <div id="allocation">
         <h2>비중 조절</h2>
@@ -38,7 +33,7 @@
         <h2>기간 선택</h2>
         <input type="radio" id="oneYear" name="period" value="1"><label for="oneYear">1년</label>
         <input type="radio" id="threeYears" name="period" value="3"><label for="threeYears">3년</label>
-        <input type="radio" id="fiveYears" name="period" value="5" checked><label for="fiveYears">5년</label>
+        <input type="radio" id="fiveYears" name="period" value="5"><label for="fiveYears">5년</label>
     </div>
     <button id="calculateBtn">성과 계산하기</button>
     <div id="results">
