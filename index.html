@@ -31,14 +31,14 @@
 
     <div id="allocationSelection">
         <h2>비중 조절</h2>
-        주식 ETF 비중: <input type="range" id="stockAllocation" name="allocation" min="0" max="100" step="10" value="30" oninput="updateAllocationLabel(this.value, 'stock'); updateTotalAllocationBar();"> <span id="stockPercentage">30%</span>%<br>
-        채권 ETF 비중: <input type="range" id="bondAllocation" name="allocation" min="0" max="100" step="10" value="30" oninput="updateAllocationLabel(this.value, 'bond'); updateTotalAllocationBar();"> <span id="bondPercentage">30%</span>%<br>
-        대체 자산 ETF 비중: <input type="range" id="alternativeAllocation" name="allocation" min="0" max="100" step="10" value="40" oninput="updateAllocationLabel(this.value, 'alternative'); updateTotalAllocationBar();"> <span id="alternativePercentage">40%</span>%
-    </div>
-    <div id="totalAllocationBar">
-        <div class="allocationFill stockFill" id="stockFill"></div>
-        <div class="allocationFill bondFill" id="bondFill"></div>
-        <div class="allocationFill alternativeFill" id="alternativeFill"></div>
+        주식 ETF 비중: <input type="range" id="stockAllocation" name="allocation" min="0" max="100" step="10" value="30" oninput="updateAllocationLabel(this.value, 'stock')"> <span id="stockPercentage">30%</span>%<br>
+        채권 ETF 비중: <input type="range" id="bondAllocation" name="allocation" min="0" max="100" step="10" value="30" oninput="updateAllocationLabel(this.value, 'bond')"> <span id="bondPercentage">30%</span>%<br>
+        대체 자산 ETF 비중: <input type="range" id="alternativeAllocation" name="allocation" min="0" max="100" step="10" value="40" oninput="updateAllocationLabel(this.value, 'alternative')"> <span id="alternativePercentage">40%</span>%
+        <div id="totalAllocationBar">
+            <div class="allocationFill stockFill" id="stockFill"></div>
+            <div class="allocationFill bondFill" id="bondFill"></div>
+            <div class="allocationFill alternativeFill" id="alternativeFill"></div>
+        </div>
     </div>
     <button id="calculatePerformance">성과 계산하기</button>
 
