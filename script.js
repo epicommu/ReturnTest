@@ -19,19 +19,21 @@ async function loadCsvData(url) {
 
 // 포트폴리오 성과 계산
 function calculatePortfolioPerformance(data, etfSelections, allocations) {
-    // 유효성 검사: 모든 ETF가 선택되었는지 확인
-    if (!etfSelections.stock || !etfSelections.bond || !etfSelections.alternative) {
-        console.error("모든 ETF가 선택되지 않았습니다.");
-        return { labels: [], data: [] };
+    // 각 선택된 ETF가 데이터 내에 있는지 초기 검증을 수행합니다.
+    for (const etf of Object.values(etfSelections)) {
+        if (!data[etf]) {
+            console.error(`선택된 ETF (${etf})에 대한 데이터가 누락되었습니다.`);
+            return { labels: [], data: [] };
+        }
     }
-    
-    // 시작일과 종료일을 기준으로 데이터 필터링
-    const startDate = "2020-01-01";
-    const endDate = "2024-03-31";
+
+    const startDate = "2020-01-01"; // 예시 시작일
+    const endDate = "2022-12-31"; // 예시 종료일
     let labels = [], performanceData = [];
 
-    // 가정: 모든 ETF의 가격 데이터는 동일한 날짜를 가집니다.
-    const etfName = etfSelections.stock; // 유효성 검사를 통과했으므로 아무 ETF 이름이나 사용 가능
+    // 모든 ETF의 데이터가 동일한 날짜를 가지고 있다고 가정합니다.
+    // 첫 번째 선택된 ETF의 이름을 사용하여 날짜 범위를 얻습니다.
+    const etfName = etfSelections.stock; // 유효성 검사를 통과했으므로 어떤 ETF 이름이든 사용할 수 있습니다.
     if (!data[etfName]) {
         console.error("선택된 ETF에 대한 데이터가 없습니다.");
         return { labels: [], data: [] };
@@ -56,6 +58,7 @@ function calculatePortfolioPerformance(data, etfSelections, allocations) {
 
     return { labels, data: performanceData };
 }
+
 
 
 // 차트 업데이트 함수
