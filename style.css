@@ -93,18 +93,24 @@ button:hover {
 }
 
 #totalAllocationBar {
-    width: 100%; /* 비중 선택 바와 같은 너비로 조정 */
+    width: 100%;
+    max-width: 600px; /* 비중 조절 바와 같은 최대 너비를 설정 */
     height: 20px;
     background-color: #ddd;
     border-radius: 5px;
-    overflow: hidden; /* 넘치는 부분을 숨김 */
-    display: flex;
+    margin: 20px auto; /* 중앙 정렬 */
+    position: relative; /* allocationFill을 상대적으로 배치하기 위해 */
 }
 
 .allocationFill {
     height: 100%;
-    transition: width 0.3s ease;
+    border-radius: 5px; /* 깔끔한 모서리 처리 */
+    position: absolute;
+    top: 0;
 }
+
+/* 비중에 따라 너비가 조정되도록 JavaScript에서 동적으로 width 값을 설정해야 함 */
+
 
 .stockFill { background-color: #ffa500; } /* 주황색 */
 .bondFill { background-color: #4caf50; } /* 초록색 */
