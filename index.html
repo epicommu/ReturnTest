@@ -8,25 +8,25 @@
 </head>
 <body>
     <h1>Investment Portfolio Performance</h1>
-    <!-- ETF 선택 -->
+
     <div id="etfSelection">
-        <label for="etfSelect">Select ETF:</label>
-        <select id="etfSelect">
-            <option value="ETF1">ETF 1</option>
-            <option value="ETF2">ETF 2</option>
-            <!-- 기타 ETF 옵션 추가 -->
-        </select>
+        <div id="stockSelection">주식 ETF 선택: <select id="stockEtf"></select></div>
+        <div id="bondSelection">채권 ETF 선택: <select id="bondEtf"></select></div>
+        <div id="alternativeSelection">대체 자산 ETF 선택: <select id="alternativeEtf"></select></div>
     </div>
-    <!-- 비중 조절 -->
-    <div id="allocation">
-        <label for="allocationRange">Allocation (%):</label>
-        <input type="range" id="allocationRange" min="0" max="100" value="50">
-        <span id="allocationValue">50%</span>
+
+    <div id="allocationSelection">
+        주식 ETF 비중: <input type="range" id="stockAllocation" min="0" max="100" step="10" value="30"> <span id="stockAllocationLabel">30%</span>
+        채권 ETF 비중: <input type="range" id="bondAllocation" min="0" max="100" step="10" value="30"> <span id="bondAllocationLabel">30%</span>
+        대체 자산 ETF 비중: <input type="range" id="alternativeAllocation" min="0" max="100" step="10" value="40"> <span id="alternativeAllocationLabel">40%</span>
     </div>
-    <!-- 성과 표시 -->
-    <div id="performanceChart">
-        <canvas id="chart"></canvas>
+
+    <button id="calculatePerformance">성과 계산하기</button>
+
+    <div id="chartContainer">
+        <canvas id="performanceChart"></canvas>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
