@@ -12,17 +12,19 @@ h1 {
     color: #444;
 }
 
-#assetSelection, #allocationSelection, #chartContainer {
+#selectionContainer {
     width: 100%;
-    max-width: 600px; /* 모든 섹션의 너비를 통일 */
-    margin: 20px 0;
-    padding: 20px;
+    max-width: 600px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
 }
 
-#assetSelection > div, #allocationSelection {
+#assetSelection, #bondSelection, #alternativeSelection {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 20px;
 }
 
@@ -39,6 +41,13 @@ input[type=checkbox], input[type=radio] {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 600px;
+    margin-bottom: 20px;
 }
 
 #allocationSelection label, #allocationSelection span {
@@ -60,6 +69,7 @@ button {
     transition: background-color 0.3s, transform 0.2s;
     font-size: 16px;
     font-weight: bold;
+    margin-bottom: 20px;
 }
 
 button:hover {
@@ -73,6 +83,8 @@ button:hover {
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
 }
 
 #performanceChart {
@@ -81,16 +93,17 @@ button:hover {
 }
 
 #totalAllocationBar {
-    width: 100%;
+    width: 100%; /* 비중 선택 바와 같은 너비로 조정 */
     height: 20px;
     background-color: #ddd;
     border-radius: 5px;
     overflow: hidden; /* 넘치는 부분을 숨김 */
+    display: flex;
 }
 
 .allocationFill {
     height: 100%;
-    position: absolute;
+    transition: width 0.3s ease;
 }
 
 .stockFill { background-color: #ffa500; } /* 주황색 */
