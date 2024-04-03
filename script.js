@@ -27,7 +27,7 @@ function calculatePortfolioPerformance(data, etfSelections, allocations) {
     
     // 시작일과 종료일을 기준으로 데이터 필터링
     const startDate = "2020-01-01";
-    const endDate = "2022-12-31";
+    const endDate = "2024-03-31";
     let labels = [], performanceData = [];
 
     // 가정: 모든 ETF의 가격 데이터는 동일한 날짜를 가집니다.
