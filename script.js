@@ -127,7 +127,7 @@ function updateAllocationBar() {
     document.getElementById('alternativeFill').style.width = `${alternativeFillWidth}%`;
 
     // 총합 100% 초과 시 막대기 색상 변경
-    if (totalAllocation > 100) {
+    if (totalAllocation > 100%) {
         document.getElementById('totalAllocationBar').classList.add('overLimit');
     } else {
         document.getElementById('totalAllocationBar').classList.remove('overLimit');
