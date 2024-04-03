@@ -9,66 +9,54 @@ async function loadCsvData(url) {
 }
 
 // 성과를 계산하는 함수
-function calculatePerformance(data, selectedEtfs, startDate, endDate) {
-    // 시작 날짜와 종료 날짜에 해당하는 인덱스 찾기
-    const startIndex = data.findIndex(row => row[0] === startDate);
-    const endIndex = data.findIndex(row => row[0] === endDate);
+function calculatePerformance(data, selectedEtfs, allocation, period) {
+    // 이 함수는 선택된 ETF들, 할당 비율, 선택된 기간에 따라 성과를 계산합니다.
+    // 계산된 성과는 라인 차트로 표시될 수 있는 데이터 형태로 반환됩니다.
+    // 주의: 이 예시는 실제 로직 구현을 위한 기본 구조를 제공합니다. 실제 데이터와 비즈니스 로직에 맞게 수정이 필요합니다.
+    
+    // TODO: 실제 데이터에 기반한 성과 계산 로직 구현
+    console.log("성과 계산 로직 구현 필요", selectedEtfs, allocation, period);
 
-    // 선택된 ETF들의 날짜별 수익률을 저장할 객체 초기화
-    const etfReturns = selectedEtfs.reduce((acc, etf) => {
-        acc[etf] = [];
-        return acc;
-    }, {});
-
-    // 각 ETF에 대해 날짜별 수익률 계산
-    for (let i = startIndex + 1; i <= endIndex; i++) {
-        selectedEtfs.forEach(etf => {
-            const etfIndex = data[0].findIndex(columnName => columnName === etf);
-            const previousPrice = parseFloat(data[i - 1][etfIndex]);
-            const currentPrice = parseFloat(data[i][etfIndex]);
-            const returnRate = ((currentPrice - previousPrice) / previousPrice) * 100;
-            etfReturns[etf].push(returnRate.toFixed(2));
-        });
-    }
-
-    return etfReturns;
-}
-
-
-// 각 자산군에서 최소 한 개의 ETF가 선택되었는지 확인하는 함수
-function isSelectedFromEachCategory() {
-    return ['stock', 'bond', 'alternative'].every(category => 
-        Array.from(document.querySelectorAll(`input[name="${category}"]:checked`)).length > 0
-    );
-}
-
-// 사용자가 선택한 기간에 기반하여 시작 날짜와 종료 날짜를 계산하는 함수
-function calculateDatesBasedOnSelection() {
-    const selectedPeriod = document.querySelector('input[name="period"]:checked').value;
-    const endDate = new Date();
-    const startDate = new Date(endDate.setFullYear(endDate.getFullYear() - parseInt(selectedPeriod, 10)));
-    return {
-        startDateStr: startDate.toISOString().split('T')[0],
-        endDateStr: endDate.toISOString().split('T')[0]
+    // 임시로 성과 데이터 생성
+    const performanceData = {
+        labels: ['2020', '2021', '2022'],
+        data: [10, 15, 20] // 예시 데이터
     };
+
+    return performanceData;
 }
 
-// 페이지가 로드될 때 실행되는 함수
-document.addEventListener('DOMContentLoaded', function() {
-    const calculateBtn = document.getElementById('calculateBtn');
-
-    calculateBtn.addEventListener('click', async () => {
-        if (!isSelectedFromEachCategory()) {
-            alert("각 자산군에서 최소 한 개의 자산을 선택해야 합니다.");
-            return;
+// 차트를 업데이트하는 함수
+function updateChart(performanceData) {
+    const ctx = document.getElementById('portfolioChart').getContext('2d');
+    if (window.myPortfolioChart) {
+        window.myPortfolioChart.destroy();
+    }
+    window.myPortfolioChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: performanceData.labels,
+            datasets: [{
+                label: '포트폴리오 성과',
+                data: performanceData.data,
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
         }
+    });
+}
 
+// 이벤트 리스너 설정
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('calculateBtn').addEventListener('click', async () => {
         const data = await loadCsvData(csvUrl);
-        const selectedEtfs = Array.from(document.querySelectorAll('input:checked')).map(input => input.value);
-        const { startDateStr, endDateStr } = calculateDatesBasedOnSelection();
-        const performances = calculatePerformance(data, selectedEtfs, startDateStr, endDateStr);
+        const selectedEtfs = Array.from(document.querySelectorAll('input[name="stock"]:checked, input[name="bond"]:checked, input[name="alternative"]:checked')).map(el => el.value);
+        const allocation = document.getElementById('stockBondAllocation').value;
+        const period = document.querySelector('input[name="period"]:checked').value;
 
-        updateChart(performances, selectedEtfs, startDateStr, endDateStr);
+        const performanceData = calculatePerformance(data, selectedEtfs, allocation, period);
+        updateChart(performanceData);
     });
 });
 
