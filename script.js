@@ -110,21 +110,35 @@ function updateAllocationLabel(value, type) {
     document.getElementById(labelId).innerText = value;
 }
 
-function updateTotalAllocationBar() {
+function updateAllocationBar() {
     const stockAllocation = parseInt(document.getElementById('stockAllocation').value, 10);
     const bondAllocation = parseInt(document.getElementById('bondAllocation').value, 10);
     const alternativeAllocation = parseInt(document.getElementById('alternativeAllocation').value, 10);
-    const total = stockAllocation + bondAllocation + alternativeAllocation;
+    const totalAllocation = stockAllocation + bondAllocation + alternativeAllocation;
 
-    // 각 비중에 따라 막대기의 너비를 조정
-    document.getElementById('stockFill').style.width = `${(stockAllocation / total) * 100}%`;
-    document.getElementById('bondFill').style.width = `${(bondAllocation / total) * 100}%`;
-    document.getElementById('alternativeFill').style.width = `${(alternativeAllocation / total) * 100}%`;
+    // 비중에 따른 각 막대기의 너비 계산
+    const stockFillWidth = (stockAllocation / totalAllocation) * 100;
+    const bondFillWidth = (bondAllocation / totalAllocation) * 100;
+    const alternativeFillWidth = (alternativeAllocation / totalAllocation) * 100;
 
-    // 비중의 합이 100%를 초과할 경우 막대기의 배경색을 변경
-    if (total > 100) {
+    // 각 막대기의 너비 설정
+    document.getElementById('stockFill').style.width = `${stockFillWidth}%`;
+    document.getElementById('bondFill').style.width = `${bondFillWidth}%`;
+    document.getElementById('alternativeFill').style.width = `${alternativeFillWidth}%`;
+
+    // 총합 100% 초과 시 막대기 색상 변경
+    if (totalAllocation > 100) {
         document.getElementById('totalAllocationBar').classList.add('overLimit');
     } else {
         document.getElementById('totalAllocationBar').classList.remove('overLimit');
     }
 }
+
+// 비중 조절 바의 이벤트 리스너에 updateAllocationBar 함수를 연결
+document.getElementById('stockAllocation').addEventListener('input', updateAllocationBar);
+document.getElementById('bondAllocation').addEventListener('input', updateAllocationBar);
+document.getElementById('alternativeAllocation').addEventListener('input', updateAllocationBar);
+
+// 페이지 로딩 시 비중 바 초기화를 위해 한 번 호출
+updateAllocationBar();
+
