@@ -1,13 +1,74 @@
 body {
     font-family: Arial, sans-serif;
-    margin: 20px;
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-#etfSelection div, #allocationSelection {
-    margin-bottom: 15px;
+h1 {
+    color: #333;
+}
+
+#assetSelection, #allocationSelection, #chartContainer {
+    width: 100%;
+    max-width: 600px; /* 모든 섹션의 너비를 통일 */
+    margin: 20px auto;
+    padding: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+#assetSelection > div, #allocationSelection {
+    margin-bottom: 20px;
+}
+
+label {
+    margin-right: 10px;
+}
+
+input[type=checkbox], input[type=radio] {
+    margin-right: 5px;
+}
+
+#allocationSelection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#allocationSelection label, #allocationSelection span {
+    margin: 10px 0;
+}
+
+input[type=range] {
+    width: 90%; /* 비중 선택 바의 너비를 조정 */
+    cursor: pointer;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #0056b3;
 }
 
 #chartContainer {
-    width: 600px;
-    height: 400px;
+    height: auto; /* 차트 컨테이너 높이 자동 조정 */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+#performanceChart {
+    width: 100%;
+    height: 400px; /* 차트 높이 설정 */
 }
