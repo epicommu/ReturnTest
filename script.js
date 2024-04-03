@@ -102,3 +102,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
+function updateAllocationLabel(value, type) {
+    // 비중 값이 반영될 라벨 요소의 ID를 설정합니다. 예: 'stockPercentage', 'bondPercentage', 'alternativePercentage'
+    const labelId = `${type}Percentage`;
+
+    // 비중 값을 표시할 라벨 요소를 찾아 값을 업데이트합니다.
+    document.getElementById(labelId).innerText = value;
+}
