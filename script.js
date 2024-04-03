@@ -127,10 +127,11 @@ function updateAllocationBar() {
     document.getElementById('alternativeFill').style.width = `${alternativeFillWidth}%`;
 
     // 총합 100% 초과 시 막대기 색상 변경
+    const totalBar = document.getElementById('totalAllocationBar');
     if (totalAllocation > 100) {
-        document.getElementById('totalAllocationBar').classList.add('overLimit');
+        totalBar.classList.add('overLimit');
     } else {
-        document.getElementById('totalAllocationBar').classList.remove('overLimit');
+        totalBar.classList.remove('overLimit');
     }
 }
 
