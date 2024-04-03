@@ -9,30 +9,31 @@
 <body>
     <h1>Investment Portfolio Performance</h1>
 
-    <div>
+    <div id="assetSelection">
         <h2>주식 자산 선택</h2>
-        <input type="checkbox" id="ACWI" name="stock" value="ACWI"><label for="ACWI">ACWI</label>
-        <input type="checkbox" id="FEZ" name="stock" value="FEZ"><label for="FEZ">FEZ</label>
-        <input type="checkbox" id="SPY" name="stock" value="SPY"><label for="SPY">SPY</label>
+        <input type="radio" id="ACWI" name="stock" value="ACWI"><label for="ACWI">ACWI</label>
+        <input type="radio" id="FEZ" name="stock" value="FEZ"><label for="FEZ">FEZ</label>
+        <input type="radio" id="SPY" name="stock" value="SPY"><label for="SPY">SPY</label>
     </div>
-    <!-- 채권 자산 선택 -->
-    <div>
+
+    <div id="bondSelection">
         <h2>채권 자산 선택</h2>
-        <input type="checkbox" id="HYG" name="bond" value="HYG"><label for="HYG">HYG</label>
-        <input type="checkbox" id="LQD" name="bond" value="LQD"><label for="LQD">LQD</label>
-        <input type="checkbox" id="TLT" name="bond" value="TLT"><label for="TLT">TLT</label>
+        <input type="radio" id="HYG" name="bond" value="HYG"><label for="HYG">HYG</label>
+        <input type="radio" id="LQD" name="bond" value="LQD"><label for="LQD">LQD</label>
+        <input type="radio" id="TLT" name="bond" value="TLT"><label for="TLT">TLT</label>
     </div>
-    <!-- 대체 자산 선택 -->
-    <div>
+
+    <div id="alternativeSelection">
         <h2>대체 자산 선택</h2>
-        <input type="checkbox" id="USO" name="alternative" value="USO"><label for="USO">USO</label>
-        <input type="checkbox" id="GLD" name="alternative" value="GLD"><label for="GLD">GLD</label>
+        <input type="radio" id="USO" name="alternative" value="USO"><label for="USO">USO</label>
+        <input type="radio" id="GLD" name="alternative" value="GLD"><label for="GLD">GLD</label>
     </div>
 
     <div id="allocationSelection">
-        주식 ETF 비중: <input type="range" id="stockAllocation" min="0" max="100" step="10" value="30"> <span id="stockAllocationLabel">30%</span>
-        채권 ETF 비중: <input type="range" id="bondAllocation" min="0" max="100" step="10" value="30"> <span id="bondAllocationLabel">30%</span>
-        대체 자산 ETF 비중: <input type="range" id="alternativeAllocation" min="0" max="100" step="10" value="40"> <span id="alternativeAllocationLabel">40%</span>
+        <h2>비중 조절</h2>
+        주식 ETF 비중: <input type="range" id="stockAllocation" name="allocation" min="0" max="100" step="10" value="30" oninput="updateAllocationLabel(this.value, 'stock')"> <span id="stockPercentage">30%</span>%<br>
+        채권 ETF 비중: <input type="range" id="bondAllocation" name="allocation" min="0" max="100" step="10" value="30" oninput="updateAllocationLabel(this.value, 'bond')"> <span id="bondPercentage">30%</span>%<br>
+        대체 자산 ETF 비중: <input type="range" id="alternativeAllocation" name="allocation" min="0" max="100" step="10" value="40" oninput="updateAllocationLabel(this.value, 'alternative')"> <span id="alternativePercentage">40%</span>%
     </div>
 
     <button id="calculatePerformance">성과 계산하기</button>
