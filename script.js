@@ -1,71 +1,72 @@
-// price.csv 파일의 URL
+// CSV 데이터 URL
 const csvUrl = 'https://raw.githubusercontent.com/epicommu/ReturnTest/main/price.csv';
 
-// CSV 데이터를 로드하고 파싱하는 함수
+// 페이지 로드 시 실행
+document.addEventListener('DOMContentLoaded', function() {
+    // 성과 계산 버튼 이벤트 리스너
+    document.getElementById('calculateBtn').addEventListener('click', calculateAndDisplayPerformance);
+
+    // 비중 조절 슬라이더 이벤트 리스너
+    document.getElementById('stockBondAllocation').addEventListener('input', function() {
+        document.getElementById('stockPercentage').textContent = this.value + '%';
+        // 여기에 비중 조절에 따른 추가적인 로직을 구현할 수 있습니다.
+    });
+});
+
+// 성과 계산 및 차트 표시
+async function calculateAndDisplayPerformance() {
+    const data = await loadCsvData(csvUrl);
+    // 여기에 사용자의 자산 선택과 비중 조절을 반영하는 로직을 추가합니다.
+    // 예시로는 선택된 ETF, 비중, 기간을 바탕으로 성과를 계산하고 차트를 업데이트하는 코드를 포함할 수 있습니다.
+
+    // 선택된 ETF들
+    const selectedEtfs = getSelectedEtfs();
+    
+    // 선택된 기간 (기간 선택은 예시로 3년 고정)
+    const period = '3'; // 실제 로직에서는 사용자 선택을 반영해야 합니다.
+
+    // 임시로 생성된 성과 데이터로 차트 업데이트
+    updateChart({}, selectedEtfs, '시작 날짜', '종료 날짜');
+}
+
+// CSV 데이터 로딩 함수
 async function loadCsvData(url) {
     const response = await fetch(url);
     const csvText = await response.text();
     return csvText.split('\n').map(row => row.split(','));
 }
 
-function calculatePerformance(data, selectedEtfs, allocations, period) {
-    // CSV 데이터에서 날짜와 ETF 가격 정보 추출
-    const dates = data.map(row => row[0]); // 첫 번째 열은 날짜
-    const prices = data.slice(1).map(row => {
-        return selectedEtfs.reduce((acc, etf, index) => {
-            const etfIndex = data[0].indexOf(etf); // ETF 이름으로부터 해당 ETF의 컬럼 인덱스 찾기
-            acc[etf] = parseFloat(row[etfIndex]); // ETF의 가격 정보 추출
-            return acc;
-        }, {});
-    });
-
-    // 선택된 기간에 따라 데이터 필터링
-    const filteredPrices = prices.slice(-period); // 최근 'period' 일간의 데이터 선택
-
-    // 포트폴리오의 일간 수익률 계산
-    const dailyReturns = filteredPrices.map((prices, index, arr) => {
-        if (index === 0) return 0; // 첫 번째 날은 이전 날짜가 없으므로 수익률 계산 불가
-        const previousPrices = arr[index - 1];
-        return selectedEtfs.reduce((acc, etf) => {
-            const dailyReturn = (prices[etf] - previousPrices[etf]) / previousPrices[etf];
-            return acc + (dailyReturn * allocations[etf]); // 가중 평균 수익률 계산
-        }, 0);
-    });
-
-    // 일간 수익률을 누적하여 포트폴리오 수익률 계산
-    const cumulativeReturns = dailyReturns.reduce((acc, curr) => {
-        const last = acc.length > 0 ? acc[acc.length - 1] : 0;
-        acc.push(last + curr);
-        return acc;
-    }, []);
-
-    // 수익률 데이터 반환
-    return {
-        labels: dates.slice(-period), // 선택된 기간의 날짜
-        data: cumulativeReturns // 누적 수익률
-    };
+// 선택된 ETF 추출 함수
+function getSelectedEtfs() {
+    return Array.from(document.querySelectorAll('input[type="checkbox"]:checked')).map(input => input.value);
 }
 
-// 차트를 업데이트하는 함수
-function updateChart(performanceData) {
+// 차트 업데이트 함수
+function updateChart(performances, selectedEtfs, startDate, endDate) {
     const ctx = document.getElementById('portfolioChart').getContext('2d');
-    if (window.myPortfolioChart) {
-        window.myPortfolioChart.destroy();
-    }
-    window.myPortfolioChart = new Chart(ctx, {
+    if (window.portfolioChart) window.portfolioChart.destroy();
+
+    // 차트 업데이트 로직 구현
+    window.portfolioChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: performanceData.labels,
+            labels: ['2020', '2021', '2022'], // 임시 라벨
             datasets: [{
-                label: '포트폴리오 성과',
-                data: performanceData.data,
+                label: `${startDate} - ${endDate} 성과 (%)`,
+                data: [10, 15, 20], // 임시 데이터
                 fill: false,
                 borderColor: 'rgb(75, 192, 192)',
                 tension: 0.1
             }]
+        },
+        options: {
+            scales: {
+                y: { beginAtZero: true }
+            }
         }
     });
 }
+
 
 // 이벤트 리스너 설정
 document.addEventListener('DOMContentLoaded', () => {
