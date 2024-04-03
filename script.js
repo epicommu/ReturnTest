@@ -8,22 +8,42 @@ async function loadCsvData(url) {
     return csvText.split('\n').map(row => row.split(','));
 }
 
-// 성과를 계산하는 함수
-function calculatePerformance(data, selectedEtfs, allocation, period) {
-    // 이 함수는 선택된 ETF들, 할당 비율, 선택된 기간에 따라 성과를 계산합니다.
-    // 계산된 성과는 라인 차트로 표시될 수 있는 데이터 형태로 반환됩니다.
-    // 주의: 이 예시는 실제 로직 구현을 위한 기본 구조를 제공합니다. 실제 데이터와 비즈니스 로직에 맞게 수정이 필요합니다.
-    
-    // TODO: 실제 데이터에 기반한 성과 계산 로직 구현
-    console.log("성과 계산 로직 구현 필요", selectedEtfs, allocation, period);
+function calculatePerformance(data, selectedEtfs, allocations, period) {
+    // CSV 데이터에서 날짜와 ETF 가격 정보 추출
+    const dates = data.map(row => row[0]); // 첫 번째 열은 날짜
+    const prices = data.slice(1).map(row => {
+        return selectedEtfs.reduce((acc, etf, index) => {
+            const etfIndex = data[0].indexOf(etf); // ETF 이름으로부터 해당 ETF의 컬럼 인덱스 찾기
+            acc[etf] = parseFloat(row[etfIndex]); // ETF의 가격 정보 추출
+            return acc;
+        }, {});
+    });
 
-    // 임시로 성과 데이터 생성
-    const performanceData = {
-        labels: ['2020', '2021', '2022'],
-        data: [10, 15, 20] // 예시 데이터
+    // 선택된 기간에 따라 데이터 필터링
+    const filteredPrices = prices.slice(-period); // 최근 'period' 일간의 데이터 선택
+
+    // 포트폴리오의 일간 수익률 계산
+    const dailyReturns = filteredPrices.map((prices, index, arr) => {
+        if (index === 0) return 0; // 첫 번째 날은 이전 날짜가 없으므로 수익률 계산 불가
+        const previousPrices = arr[index - 1];
+        return selectedEtfs.reduce((acc, etf) => {
+            const dailyReturn = (prices[etf] - previousPrices[etf]) / previousPrices[etf];
+            return acc + (dailyReturn * allocations[etf]); // 가중 평균 수익률 계산
+        }, 0);
+    });
+
+    // 일간 수익률을 누적하여 포트폴리오 수익률 계산
+    const cumulativeReturns = dailyReturns.reduce((acc, curr) => {
+        const last = acc.length > 0 ? acc[acc.length - 1] : 0;
+        acc.push(last + curr);
+        return acc;
+    }, []);
+
+    // 수익률 데이터 반환
+    return {
+        labels: dates.slice(-period), // 선택된 기간의 날짜
+        data: cumulativeReturns // 누적 수익률
     };
-
-    return performanceData;
 }
 
 // 차트를 업데이트하는 함수
