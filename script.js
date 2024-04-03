@@ -1,68 +1,87 @@
-// CSV 데이터 로드 및 파싱
 async function loadCsvData(url) {
     const response = await fetch(url);
     const csvText = await response.text();
-    const rows = csvText.split('\n').map(row => row.split(','));
-    return rows.reduce((acc, row) => {
-        acc[row[0]] = row.slice(1); // 첫 번째 열을 키로, 나머지를 값으로 저장
-        return acc;
-    }, {});
+    const lines = csvText.trim().split('\n');
+    const headers = lines.shift().split(',');
+    const data = lines.map(line => line.split(','));
+
+    let prices = {};
+    data.forEach(row => {
+        const date = row[0];
+        headers.slice(1).forEach((header, index) => {
+            if (!prices[header]) prices[header] = {};
+            prices[header][date] = parseFloat(row[index + 1]);
+        });
+    });
+    return prices;
 }
 
-// 선택된 ETF와 비중에 따른 포트폴리오 성과 계산
 function calculatePortfolioPerformance(data, etfSelections, allocations) {
-    // 이 함수에서는 선택된 ETF들과 비중을 기반으로 포트폴리오 성과를 계산합니다.
-    // 계산된 성과는 차트로 표시될 수 있도록 데이터를 반환해야 합니다.
-    // 차트를 위한 데이터 구조 예시: { labels: ['2020-01', '2020-02', ...], data: [0.5, 1.2, ...] }
-    
-    // TODO: 실제 성과 계산 로직 구현
-    console.log("성과 계산 필요", etfSelections, allocations);
-    
-    // 임시 성과 데이터
-    const performanceData = {
-        labels: ['2020-01', '2020-02', '2020-03'],
-        data: [0, 10, 20] // 예시 데이터: 지난 3개월간의 성과
-    };
-    return performanceData;
+    // 시작일과 종료일을 기준으로 데이터 필터링
+    const startDate = "2020-01-01"; // 예시 시작일
+    const endDate = "2022-12-31"; // 예시 종료일
+    let labels = [], performanceData = [];
+
+    Object.keys(data[Object.keys(etfSelections)[0]]).forEach(date => {
+        if (date >= startDate && date <= endDate) {
+            labels.push(date);
+            let totalPerformance = 0;
+            Object.keys(etfSelections).forEach(assetType => {
+                const etf = etfSelections[assetType];
+                const allocation = allocations[assetType] / 100;
+                const priceChange = (data[etf][date] / data[etf][startDate]) - 1;
+                totalPerformance += priceChange * allocation;
+            });
+            performanceData.push(totalPerformance * 100); // 변화율을 퍼센트로 표시
+        }
+    });
+
+    return { labels, data: performanceData };
 }
 
-// 성과 데이터를 바탕으로 차트 업데이트
-function updateChart(performanceData) {
+function updateChart({ labels, data }) {
     const ctx = document.getElementById('performanceChart').getContext('2d');
-    if (window.myChart) {
-        window.myChart.destroy();
-    }
-    window.myChart = new Chart(ctx, {
+    if (window.portfolioChart) window.portfolioChart.destroy();
+    
+    window.portfolioChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: performanceData.labels,
+            labels,
             datasets: [{
-                label: 'Portfolio Performance',
-                data: performanceData.data,
+                label: 'Portfolio Performance (%)',
+                data,
                 borderColor: 'rgb(75, 192, 192)',
                 tension: 0.1
             }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: { beginAtZero: true }
+                }]
+            }
         }
     });
 }
 
-document.addEventListener('DOMContentLoaded', async function() {
+document.addEventListener('DOMContentLoaded', async () => {
     const calculateBtn = document.getElementById('calculatePerformance');
-    const data = await loadCsvData('https://raw.githubusercontent.com/epicommu/ReturnTest/main/price.csv'); // 실제 CSV 파일 경로로 변경 필요
+    const prices = await loadCsvData('https://raw.githubusercontent.com/epicommu/ReturnTest/main/price.csv');
 
-    calculateBtn.addEventListener('click', function() {
+    calculateBtn.addEventListener('click', () => {
         const etfSelections = {
-            stock: document.getElementById('stockEtf').value,
-            bond: document.getElementById('bondEtf').value,
-            alternative: document.getElementById('alternativeEtf').value,
+            stock: document.querySelector('input[name="stock"]:checked').value,
+            bond: document.querySelector('input[name="bond"]:checked').value,
+            alternative: document.querySelector('input[name="alternative"]:checked').value,
         };
         const allocations = {
-            stock: parseInt(document.getElementById('stockAllocation').value, 10),
-            bond: parseInt(document.getElementById('bondAllocation').value, 10),
-            alternative: parseInt(document.getElementById('alternativeAllocation').value, 10),
+            stock: document.getElementById('stockAllocation').value,
+            bond: document.getElementById('bondAllocation').value,
+            alternative: document.getElementById('alternativeAllocation').value,
         };
 
-        const performanceData = calculatePortfolioPerformance(data, etfSelections, allocations);
-        updateChart(performanceData);
+        const performance = calculatePortfolioPerformance(prices, etfSelections, allocations);
+        updateChart(performance);
     });
 });
+
