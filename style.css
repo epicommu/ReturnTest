@@ -1,30 +1,13 @@
 body {
     font-family: Arial, sans-serif;
+    margin: 20px;
 }
 
-#assetSelection, #allocation, #periodSelection {
-    margin-bottom: 20px;
+#etfSelection div, #allocationSelection {
+    margin-bottom: 15px;
 }
 
-h2 {
-    margin-bottom: 10px;
-}
-
-h3 {
-    margin: 10px 0;
-}
-
-#results {
-    width: 100%;
-    max-width: 600px;
-    margin: 20px auto;
-}
-
-#assetSelection, #periodSelection {
-    margin-bottom: 20px;
-}
-
-h2 {
-    color: #333;
-    margin-bottom: 10px;
+#chartContainer {
+    width: 600px;
+    height: 400px;
 }
