@@ -9,10 +9,24 @@
 <body>
     <h1>Investment Portfolio Performance</h1>
 
-    <div id="etfSelection">
-        <div id="stockSelection">주식 ETF 선택: <select id="stockEtf"></select></div>
-        <div id="bondSelection">채권 ETF 선택: <select id="bondEtf"></select></div>
-        <div id="alternativeSelection">대체 자산 ETF 선택: <select id="alternativeEtf"></select></div>
+    <div>
+        <h2>주식 자산 선택</h2>
+        <input type="checkbox" id="ACWI" name="stock" value="ACWI"><label for="ACWI">ACWI</label>
+        <input type="checkbox" id="FEZ" name="stock" value="FEZ"><label for="FEZ">FEZ</label>
+        <input type="checkbox" id="SPY" name="stock" value="SPY"><label for="SPY">SPY</label>
+    </div>
+    <!-- 채권 자산 선택 -->
+    <div>
+        <h2>채권 자산 선택</h2>
+        <input type="checkbox" id="HYG" name="bond" value="HYG"><label for="HYG">HYG</label>
+        <input type="checkbox" id="LQD" name="bond" value="LQD"><label for="LQD">LQD</label>
+        <input type="checkbox" id="TLT" name="bond" value="TLT"><label for="TLT">TLT</label>
+    </div>
+    <!-- 대체 자산 선택 -->
+    <div>
+        <h2>대체 자산 선택</h2>
+        <input type="checkbox" id="USO" name="alternative" value="USO"><label for="USO">USO</label>
+        <input type="checkbox" id="GLD" name="alternative" value="GLD"><label for="GLD">GLD</label>
     </div>
 
     <div id="allocationSelection">
