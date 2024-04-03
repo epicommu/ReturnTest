@@ -1,8 +1,14 @@
 // 차트 업데이트 함수
 function updateChart(performances, selectedEtfs, startDate, endDate) {
     const ctx = document.getElementById('portfolioChart').getContext('2d');
-    if (window.portfolioChart) window.portfolioChart.destroy();
+    // 차트 인스턴스 존재 여부 확인 후 삭제
+    if (window.portfolioChart && typeof window.portfolioChart.destroy === 'function') {
+        window.portfolioChart.destroy();
+    }
+    // 차트 초기화 로직...
+}
 
+    
     // 차트 업데이트 로직 구현
     window.portfolioChart = new Chart(ctx, {
         type: 'line',
