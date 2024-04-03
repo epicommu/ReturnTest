@@ -1,23 +1,25 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-color: #f4f4f4;
 }
 
 h1 {
-    color: #333;
+    color: #444;
 }
 
 #assetSelection, #allocationSelection, #chartContainer {
     width: 100%;
     max-width: 600px; /* 모든 섹션의 너비를 통일 */
-    margin: 20px auto;
-    padding: 15px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    margin: 20px 0;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 #assetSelection > div, #allocationSelection {
@@ -26,6 +28,7 @@ h1 {
 
 label {
     margin-right: 10px;
+    font-weight: 600;
 }
 
 input[type=checkbox], input[type=radio] {
@@ -43,29 +46,33 @@ input[type=checkbox], input[type=radio] {
 }
 
 input[type=range] {
-    width: 90%; /* 비중 선택 바의 너비를 조정 */
+    width: 100%; /* 비중 선택 바의 너비를 조정 */
     cursor: pointer;
 }
 
 button {
-    padding: 10px 20px;
+    padding: 10px 25px;
     background-color: #007bff;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 20px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, transform 0.2s;
+    font-size: 16px;
+    font-weight: bold;
 }
 
 button:hover {
     background-color: #0056b3;
+    transform: scale(1.05);
 }
 
 #chartContainer {
     height: auto; /* 차트 컨테이너 높이 자동 조정 */
     padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 #performanceChart {
@@ -74,23 +81,20 @@ button:hover {
 }
 
 #totalAllocationBar {
-    width: 90%;
+    width: 100%;
     height: 20px;
     background-color: #ddd;
     border-radius: 5px;
-    position: relative;
-    margin: 20px 0;
+    overflow: hidden; /* 넘치는 부분을 숨김 */
 }
 
 .allocationFill {
     height: 100%;
-    border-radius: 5px;
     position: absolute;
-    top: 0;
-    left: 0;
 }
 
 .stockFill { background-color: #ffa500; } /* 주황색 */
 .bondFill { background-color: #4caf50; } /* 초록색 */
 .alternativeFill { background-color: #2196f3; } /* 파란색 */
-.overLimit { background-color: #f44336; } /* 붉은 색 */
+.overLimit { background-color: #f44336; } /* 붉은색을 사용하여 한계 초과를 표시 */
+
