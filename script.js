@@ -109,3 +109,22 @@ function updateAllocationLabel(value, type) {
     // 비중 값을 표시할 라벨 요소를 찾아 값을 업데이트합니다.
     document.getElementById(labelId).innerText = value;
 }
+
+function updateTotalAllocationBar() {
+    const stockAllocation = parseInt(document.getElementById('stockAllocation').value, 10);
+    const bondAllocation = parseInt(document.getElementById('bondAllocation').value, 10);
+    const alternativeAllocation = parseInt(document.getElementById('alternativeAllocation').value, 10);
+    const total = stockAllocation + bondAllocation + alternativeAllocation;
+
+    // 각 비중에 따라 막대기의 너비를 조정
+    document.getElementById('stockFill').style.width = `${(stockAllocation / total) * 100}%`;
+    document.getElementById('bondFill').style.width = `${(bondAllocation / total) * 100}%`;
+    document.getElementById('alternativeFill').style.width = `${(alternativeAllocation / total) * 100}%`;
+
+    // 비중의 합이 100%를 초과할 경우 막대기의 배경색을 변경
+    if (total > 100) {
+        document.getElementById('totalAllocationBar').classList.add('overLimit');
+    } else {
+        document.getElementById('totalAllocationBar').classList.remove('overLimit');
+    }
+}
